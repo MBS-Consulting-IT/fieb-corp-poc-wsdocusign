@@ -103,6 +103,7 @@
     <Content Include="WSAssinatura.asmx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetEnvelope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SigningViaEmail.cs" />
     <Compile Include="WSAssinatura.asmx.cs">

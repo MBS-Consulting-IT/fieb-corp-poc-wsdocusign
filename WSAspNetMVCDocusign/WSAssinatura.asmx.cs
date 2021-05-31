@@ -9,6 +9,7 @@ using static DocuSign.eSign.Client.Auth.OAuth.UserInfo;
 using System.Configuration;
 using System.Text;
 using System.IO;
+using DocuSign.eSign.Model;
 
 namespace WSAspNetMVCDocusign
 {
@@ -27,11 +28,19 @@ namespace WSAspNetMVCDocusign
         protected string baseUri;
 
         [WebMethod]
-        public string Assinar(string signerEmail, string signerName, string ccEmail, string ccName, string docPdf, string envStatus)
+        public string CriaEnvelope(string signerEmail, string signerName, string ccEmail, string ccName, string docPdf, string envStatus)
         {
             AuthenticateWithJWT();
             return SigningViaEmail.SendEnvelopeViaEmail(signerEmail, signerName, ccEmail, ccName, accessToken, baseUri, accountId, docPdf, envStatus);
-            
+
+        }
+
+        [WebMethod]
+        public string ConsultaStatus(string envID)
+        {
+            AuthenticateWithJWT();
+            return GetEnvelope.GetEnvelopeData(accountId, envID, accessToken, baseUri).Status;
+
         }
         public void AuthenticateWithJWT()
         {
