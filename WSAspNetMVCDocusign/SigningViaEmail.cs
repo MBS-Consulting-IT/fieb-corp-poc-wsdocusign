@@ -25,17 +25,17 @@ namespace WSAspNetMVCDocusign
         /// <param name="docDocx">String of bytes representing the Word document (docx)</param>
         /// <param name="envStatus">Status to set the envelope to</param>
         
-        public static string SendEnvelopeViaEmail(string signerEmail, string signerName, string ccEmail, string ccName, string accessToken, string basePath, string accountId, string docPdf, string envStatus)
+        public static string SendEnvelopeViaEmail(string signerEmail, string signerName, string signerEmail2, string signerName2, string ccEmail, string ccName, string accessToken, string basePath, string accountId, string docPdf, string envStatus)
         {
             ApiClient apiClient = new ApiClient(basePath);
-            EnvelopeDefinition env = MakeEnvelope(signerEmail, signerName, ccEmail, ccName, docPdf, envStatus);
+            EnvelopeDefinition env = MakeEnvelope(signerEmail, signerName, signerEmail2, signerName2, ccEmail, ccName, docPdf, envStatus);
             apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + accessToken);
             EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);
             EnvelopeSummary results = envelopesApi.CreateEnvelope(accountId, env);
             return results.EnvelopeId;
         }
 
-        private static EnvelopeDefinition MakeEnvelope(string signerEmail, string signerName, string ccEmail, string ccName, string docPdf, string envStatus)
+        private static EnvelopeDefinition MakeEnvelope(string signerEmail, string signerName, string signerEmail2, string signerName2, string ccEmail, string ccName, string docPdf, string envStatus)
         {
             // Data for this method
             // signerEmail
@@ -100,8 +100,16 @@ namespace WSAspNetMVCDocusign
             {
                 Email = signerEmail,
                 Name = signerName,
-                RecipientId = "1",
+                RecipientId = "10",
                 RoutingOrder = "1"
+            };
+
+            Signer signer2 = new Signer
+            {
+                Email = signerEmail2,
+                Name = signerName2,
+                RecipientId = "20",
+                RoutingOrder = "2"
             };
 
             // routingOrder (lower means earlier) determines the order of deliveries
@@ -114,7 +122,7 @@ namespace WSAspNetMVCDocusign
             {
                 Email = ccEmail,
                 Name = ccName,
-                RecipientId = "2",
+                RecipientId = "3",
                 RoutingOrder = "2"
             };
 
@@ -127,9 +135,17 @@ namespace WSAspNetMVCDocusign
             // use the same anchor string for their "signer 1" tabs.
             SignHere signHere1 = new SignHere
             {
-                AnchorString = "**signature_1**",
+                AnchorString = "Dummy",
                 AnchorUnits = "pixels",
-                AnchorYOffset = "10",
+                AnchorYOffset = "150",
+                AnchorXOffset = "20"
+            };
+
+            SignHere signHere2 = new SignHere
+            {
+                AnchorString = "Dummy",
+                AnchorUnits = "pixels",
+                AnchorYOffset = "300",
                 AnchorXOffset = "20"
             };
 
@@ -148,10 +164,16 @@ namespace WSAspNetMVCDocusign
             };
             signer1.Tabs = signer1Tabs;
 
+            Tabs signer2Tabs = new Tabs
+            {
+                SignHereTabs = new List<SignHere> { signHere2 }
+            };
+            signer2.Tabs = signer2Tabs;
+
             // Add the recipients to the envelope object
             Recipients recipients = new Recipients
             {
-                Signers = new List<Signer> { signer1 },
+                Signers = new List<Signer> { signer1, signer2 },
                 CarbonCopies = new List<CarbonCopy> { cc1 }
             };
             env.Recipients = recipients;
