@@ -28,10 +28,10 @@ namespace WSAspNetMVCDocusign
         protected string baseUri;
 
         [WebMethod]
-        public string CriaEnvelope(string signerEmail, string signerName, string signerEmail2, string signerName2, string ccEmail, string ccName, string docPdf, string envStatus)
+        public string CriaEnvelope(string signerEmail, string signerName, string signerEmail2, string signerName2, string signerEmail3, string signerName3, string docPdf, string envStatus)
         {
             AuthenticateWithJWT();
-            return SigningViaEmail.SendEnvelopeViaEmail(signerEmail, signerName, signerEmail2, signerName2, ccEmail, ccName, accessToken, baseUri, accountId, docPdf, envStatus);
+            return SigningViaEmail.SendEnvelopeViaEmail(signerEmail, signerName, signerEmail2, signerName2, signerEmail3, signerName3, accessToken, baseUri, accountId, docPdf, envStatus);
 
         }
 
